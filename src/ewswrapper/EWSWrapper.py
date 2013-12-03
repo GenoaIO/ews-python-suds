@@ -32,6 +32,8 @@ from os import path
 from copy import deepcopy
 from xml.etree import ElementTree
 import EWSType
+import os
+
 
 class EWSWrapper:
     '''Provides an interface for an Exchange server.'''
@@ -59,14 +61,19 @@ class EWSWrapper:
 
         # Download and fix up the WSDL
         #localwsdl = 'file://%s' % self.setup()
-        basepath = path.normpath(path.dirname( path.realpath( __file__ )))
-        self.basepath = basepath.replace('\\', '/') + '/' + datadir
+        
+#         basepath = path.normpath(path.dirname( path.realpath( __file__ )))
+#         self.basepath = basepath.replace('\\', '/') + '/' + datadir
+        basepath = os.path.abspath(datadir)
+        self.basepath = os.path.join(basepath,'wsdl')
+
         if self.basepath.startswith('/'):
             tmp_basepath = self.basepath[1:]
         else:
-            tmp_basepath = self.basepath	
+            tmp_basepath = self.basepath
+        
+            	
         localwsdl = 'file:///%s/services.wsdl' % (tmp_basepath)
-        #cache path
         cachepath = basepath.replace('\\', '/') + '/suds_cache'
 
 

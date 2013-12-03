@@ -31,8 +31,8 @@ import datetime
 
 
 #include EWS wrapper
-from EWSWrapper import EWSWrapper, EWSDateTime
-
+from ewswrapper.EWSWrapper import EWSDateTime
+from ewswrapper.EWSWrapper import EWSWrapper
 
 start_time = datetime.datetime.now()
 
@@ -41,8 +41,11 @@ domain  = 'KC-LN-VS23-EX1'
 user    = 'robert.betts2@kewcapital.com'
 pw      = 'Password01'
 
+
+datadir = './data'
+
 #create EWSWrapper object
-ews = EWSWrapper(host=domain, username=user, password=pw, debug=True).wrapper
+ews = EWSWrapper(host=domain, username=user, password=pw, datadir=datadir,debug=True).wrapper
 
 #on_behalf account address
 account = 'robert.betts@kewcapital.com'
