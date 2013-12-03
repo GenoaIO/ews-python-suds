@@ -88,9 +88,9 @@ class EWSWrapper:
             raise Exception('Auth type not supported by Client(): %s' % authtype)
 
         if debug:
-            logging.basicConfig(level=logging.INFO, filename='./log/ews_debug.log',
-                    format='%(asctime)s %(levelname)s: %(message)s',
-                    datefmt='%Y-%m-%d %H:%M:%S')
+#             logging.basicConfig(level=logging.INFO, filename='./log/ews_debug.log',
+#                     format='%(asctime)s %(levelname)s: %(message)s',
+#                     datefmt='%Y-%m-%d %H:%M:%S')
             logging.getLogger('suds.client').setLevel(logging.DEBUG)
             the_cache = cache.FileCache(location=cachepath, days=0)
             self.client = Client(url=localwsdl, transport=auth, cache=the_cache)
