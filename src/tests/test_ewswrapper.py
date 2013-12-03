@@ -37,9 +37,9 @@ from ewswrapper.EWSWrapper import EWSWrapper
 start_time = datetime.datetime.now()
 
 #user, password & host setup
-domain  = 'KC-LN-VS23-EX1'
-user    = 'robert.betts2@kewcapital.com'
-pw      = 'Password01'
+domain  = 'LOC-VS23-EX1'
+user    = 'robert.betts@company.com'
+pw      = 'password'
 
 
 datadir = './data'
@@ -48,7 +48,7 @@ datadir = './data'
 ews = EWSWrapper(host=domain, username=user, password=pw, datadir=datadir,debug=True).wrapper
 
 #on_behalf account address
-account = 'robert.betts@kewcapital.com'
+account = user
 
 #what would you like to test tonight?
 to_do = 'folder_list'
