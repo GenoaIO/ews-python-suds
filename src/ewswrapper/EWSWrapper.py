@@ -72,8 +72,9 @@ class EWSWrapper:
         else:
             tmp_basepath = self.basepath
         
-            	
+        
         localwsdl = 'file:///%s/services.wsdl' % (tmp_basepath)
+        logging.debug("localwsdl: %s" % localwsdl)
         cachepath = basepath.replace('\\', '/') + '/suds_cache'
 
 
@@ -124,18 +125,22 @@ class EWSWrapper:
             # official name corresponding to the version numbers supplied 
             # in SOAP response headers. For some unknown reason, they may
             # differ.
-            versiondict = {\
-                '8': {\
-                    '0': ('Exchange2007','Microsoft Exchange Server 2007'),\
-                    '1': ('Exchange2007_SP1','Microsoft Exchange Server 2007 SP1'),\
-                    '2': ('Exchange2007_SP2','Microsoft Exchange Server 2007 SP2'), \
-                    '3': ('Exchange2007_SP3','Microsoft Exchange Server 2007 SP3') \
-                    },\
-                '14': {\
-                    '00': ('Exchange2010','Microsoft Exchange Server 2010'),\
-                    '01': ('Exchange2010_SP1','Microsoft Exchange Server 2010 SP1'),\
-                    '02': ('Exchange2010_SP2','Microsoft Exchange Server 2010 SP2') \
-                    }\
+            versiondict = {
+                '8': {
+                    '0': ('Exchange2007','Microsoft Exchange Server 2007'),
+                    '1': ('Exchange2007_SP1','Microsoft Exchange Server 2007 SP1'),
+                    '2': ('Exchange2007_SP2','Microsoft Exchange Server 2007 SP2'),
+                    '3': ('Exchange2007_SP3','Microsoft Exchange Server 2007 SP3') 
+                    },
+                '14': {
+                    '00': ('Exchange2010','Microsoft Exchange Server 2010'),
+                    '01': ('Exchange2010_SP1','Microsoft Exchange Server 2010 SP1'),
+                    '02': ('Exchange2010_SP2','Microsoft Exchange Server 2010 SP2') 
+                    },
+                '15' : {
+                    '0': ('Exchange2013','Microsoft Exchange Server 2013'),
+                    '1': ('Exchange2013_SP1','Microsoft Exchange Server 2013 SP1')
+                    }
             }
 
             if versiondict.has_key(self.majorversion) and\
@@ -171,10 +176,20 @@ class EWSWrapper:
             shortname = ElementTree.parse(types_xsd).getroot().attrib['version']
 
             # I'm lazy. Just generate enough to get a soap:Header response
-            xml = self.exchange.transport.wrap('<m:FindItem/>', shortname)
+            body_xml = "<m:FindItem/>"
+            body_xml = """    <ConvertId xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
+               xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+               DestinationFormat="OwaId">
+      <SourceIds>
+        <t:AlternateId Format="EwsLegacyId" Id="AAAlAFVz" 
+                       Mailbox="user@example.com"/>
+      </SourceIds>
+    </ConvertId>"""
+            xml = self.exchange.transport.wrap(body_xml, shortname)
             try:
                 # urllib2 might decide to throw an error on the response. We
                 # don't care, we just want the raw data.
+                logging.debug('sending to (%s)\nmessage:\n%s', url, xml)
                 response = trans.geturl(url=url, authtype=authtype, data=xml)
             except urllib2.HTTPError as e:
                 response = e.read()
@@ -255,8 +270,14 @@ class EWSWrapper:
             urllib2.install_opener(opener)
 
             # Retrieve the result
-            fp = urllib2.urlopen(url, data)
-            return fp.read()
+            #fp = urllib2.urlopen(url, data)
+            try:
+                request = urllib2.Request(url, data, {"Content-Type": "text/xml; charset=utf-8"})
+                fp = urllib2.urlopen(request)
+            except Exception, e:
+                pass
+            result = fp.read()
+            return result
 
 
         def gettype(self):
@@ -318,7 +339,7 @@ class EWSWrapper:
     <s:Header>%s</s:Header>
     <s:Body>%s</s:Body>
     </s:Envelope>''' % (header, xml)
-
+            
 
     class Credentials:
         '''Keeps login info'''
