@@ -27,6 +27,7 @@ import logging
 import datetime
 #logging.basicConfig(level=logging.INFO)
 #logging.getLogger('suds').setLevel(logging.INFO)
+#logging.getLogger('suds.client').setLevel(logging.INFO)
 # logging.getLogger('suds.wsdl').setLevel(logging.INFO)
 
 
@@ -37,18 +38,19 @@ from ewswrapper.EWSWrapper import EWSWrapper
 start_time = datetime.datetime.now()
 
 #user, password & host setup
-domain  = 'LOC-VS23-EX1'
-user    = 'robert.betts@company.com'
-pw      = 'password'
+domain  = 'ExchangeServerName'
+user    = 'user.name@domain.com'
+pw      = 'Welcome1'
 
+#on_behalf account address
+account = 'account.user.name@domain.com'
 
+#base location for wsdl file
 datadir = './data'
 
 #create EWSWrapper object
 ews = EWSWrapper(host=domain, username=user, password=pw, datadir=datadir,debug=True).wrapper
 
-#on_behalf account address
-account = user
 
 #what would you like to test tonight?
 to_do = 'folder_list'
