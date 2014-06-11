@@ -32,11 +32,10 @@ setup(
     maintainer="Robert Betts ",
     maintainer_email="robert.betts@navohpartners.com",
     url="https://github.com/navohpartners/ews-python-suds",
-    packages=find_packages('src',exclude=['*tests*']),
+    packages=find_packages('src',exclude=['*tests*', '*ntlm-examples*']),
     package_dir = {'':'src'},
     install_requires = [
         'setuptools',
         'tornado>=3.1.1',
-        'python-ntlm',
       ],    
 )
